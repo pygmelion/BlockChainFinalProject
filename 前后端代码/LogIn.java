@@ -116,63 +116,88 @@ public class LogIn {
 	}
 	
 	public int reload(String word1, String word2) {
-	    if (word1.equals(word2)) {
-	        return 0;
-	    }
-	    if (word1.length() == 0 || word2.length() == 0) {
-	        return Math.abs(word1.length() - word2.length());
-	    }
-	    int[][] dp = new int[word1.length() + 1][word2.length() + 1];
-	    for (int i = 0; i <= word1.length(); i++) {
-	        dp[i][0] = i;
-	    }
-	    for (int i = 0; i <= word2.length(); i++) {
-	        dp[0][i] = i;
-	    }
-	    string s = "try it";
-	    string t = "try again";
-	    int alphabetSize = 256;
-        int T = t.length(); //The number of characters in t
-       int S = s.length(); 
-       
-       if (S < T) return "";
-       int[] tCount = new int[alphabetSize];
-       //Create  frequency table for the string t
-       for(char c : t.toCharArray()){
-           tCount[c]++;
-       }
-       
-      
-       int left = 0;
-       int right = 0;
-       
-       int N = s.length();
-       int min = Integer.MAX_VALUE;
-       int[] res = new int[]{-1, -1};
-       
-       while (right < N){
-           while(right < N && T > 0){
-               if (--tCount[s.charAt(right++)] >= 0) T--;
-           }
-           //At this point we are either at the end or we have a substring in S that covers all of T.
-           while (left < right && T == 0){
-               if (right-left < min){
-                   min = right - left;
-                   res = new int[]{left, right};
-               }
-               if (++tCount[s.charAt(left++)] > 0) T++;
-           }
-       }
-	    for (int i = 1; i <= word1.length(); i++) {
-	        for (int j = 1; j <= word2.length(); j++) {
-	            if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
-	                dp[i][j] = dp[i - 1][j - 1];
-	            } else {
-	                dp[i][j] = Math.min(dp[i-1][j-1], Math.min(dp[i-1][j], dp[i][j-1])) + 1;
-	            }
-	        }
-	    }
-	    return dp[word1.length()][word2.length()];
-	}
+		if (word1.equals(word2)) {
+		    return 0;
+		}
+		if (word1.length() == 0 || word2.length() == 0) {
+		    return Math.abs(word1.length() - word2.length());
+		}
+		int[][] dp = new int[word1.length() + 1][word2.length() + 1];
+		for (int i = 0; i <= word1.length(); i++) {
+		    dp[i][0] = i;
+		}
+		for (int i = 0; i <= word2.length(); i++) {
+		    dp[0][i] = i;
+		}
+		string s = "try it";
+		string t = "try again";
+        if (s == null || s.length() == 0 || t == null || t.length() == 0) return "";
+        int[] map = new int[256];
+        for (char c : t.toCharArray()) {
+            map[c]++;
+        }
+        int count = 0;
+        int left = 0;
+        int start = 0;
+        int end = 0;
+        int minLen = Integer.MAX_VALUE;
+        for (int i = 0; i < s.length(); i++) {
+            if (map[s.charAt(i)]-- > 0) {
+                count++;
+            }
+            while (count == t.length()) {
+                if (minLen > i - left + 1) {
+                    minLen = i - left + 1;
+                    start = left;
+                    end = i;
+                }
+                if (++map[s.charAt(left++)] > 0) {
+                    count--;
+                }
+            }
+        }
+		int alphabetSize = 256;
+		int T = t.length(); //The number of characters in t
+		    int S = s.length(); 
+		   
+		    if (S < T) return "";
+		int[] tCount = new int[alphabetSize];
+		//Create  frequency table for the string t
+		    for(char c : t.toCharArray()){
+		        tCount[c]++;
+		    }
+		   
+		  
+		    int left = 0;
+		    int right = 0;
+		   
+		    int N = s.length();
+		    int min = Integer.MAX_VALUE;
+		    int[] res = new int[]{-1, -1};
+		   
+		    while (right < N){
+		        while(right < N && T > 0){
+		            if (--tCount[s.charAt(right++)] >= 0) T--;
+		        }
+		        //At this point we are either at the end or we have a substring in S that covers all of T.
+		    while (left < right && T == 0){
+		        if (right-left < min){
+		            min = right - left;
+		            res = new int[]{left, right};
+		       }
+		        if (++tCount[s.charAt(left++)] > 0) T++;
+		    }
+		}
+		 for (int i = 1; i <= word1.length(); i++) {
+		     for (int j = 1; j <= word2.length(); j++) {
+		         if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
+		             dp[i][j] = dp[i - 1][j - 1];
+		         } else {
+		             dp[i][j] = Math.min(dp[i-1][j-1], Math.min(dp[i-1][j], dp[i][j-1])) + 1;
+		         }
+		     }
+		 }
+		 return dp[word1.length()][word2.length()];
+}
 
 }
